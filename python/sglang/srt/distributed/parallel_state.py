@@ -3081,7 +3081,6 @@ def patch_tensor_parallel_group(tp_group: GroupCoordinator):
             attn_dp_rank=0,
             attn_cp_size=1,
             attn_cp_rank=0,
-            dp_size=1,
         ):
             yield
     finally:
