@@ -201,8 +201,6 @@ class TestRegisterToBootstrap(CustomTestCase):
         self.assertIn("10.0.0.1", url_used)
 
     @patch("sglang.srt.disaggregation.common.conn.requests.put")
-    # The consumer reads the group through `get_parallel()`, which reads it
-    # from where the build stored it, so that is where the stub belongs.
     @patch("sglang.srt.distributed.parallel_state._WORLD")
     def test_rust_attention_dp_replicates_complete_topology_across_hosts(
         self, mock_world_group, mock_put
