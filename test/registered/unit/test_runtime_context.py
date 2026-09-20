@@ -560,16 +560,16 @@ class TestEveryDeclaredParallelNameIsStatable(_IsolatedOverrides):
 
         The bag carries the declared quotients as well as the operator's
         leaves, and both are ahead of the live getter once a configuration is
-        published: a name in `_LIVE_READS` and in either of them would answer
+        published: a `Computed` name that is also in either of them would answer
         from the getter before publish and from the bag after."""
         from sglang.srt.runtime_context import (
-            _LIVE_READS,
             _derived_widths,
             _parallel_config_leaves,
+            computed_names,
         )
 
-        self.assertEqual(set(_LIVE_READS) & _parallel_config_leaves(), set())
-        self.assertEqual(set(_LIVE_READS) & set(_derived_widths()), set())
+        self.assertEqual(computed_names() & _parallel_config_leaves(), set())
+        self.assertEqual(computed_names() & set(_derived_widths()), set())
 
     def test_an_undeclared_name_is_refused(self):
         with self.assertRaises(ValueError):
@@ -2546,18 +2546,23 @@ class TestTheAccessorsHaveNoCallersOutsideTheirPackage(CustomTestCase):
         wrap it -- which is what lets the getters be deprecated without the
         replacement tripping the warning meant for people who bypass it."""
 
-        from sglang.srt.distributed import parallel_state
-        from sglang.srt.runtime_context import _LIVE_READS, Live
+        import inspect
 
-        sources = [
-            live.source if isinstance(live, Live) else live
-            for live in _LIVE_READS.values()
-        ]
+        from sglang.srt.distributed import parallel_state
+        from sglang.srt.runtime_context import Computed, ParallelContext
+
+        reached = []
+        for name, decl in vars(ParallelContext).items():
+            if not isinstance(decl, Computed) or decl.fn is None:
+                continue
+            body = inspect.getsource(decl.fn)
+            if decl.replaces and decl.replaces + "(" in body:
+                reached.append(name)
         self.assertEqual(
-            [src for src in sources if isinstance(src, str)],
+            reached,
             [],
-            "a name answered by calling a parallel_state getter is a name the "
-            "deprecation cannot cover",
+            "a name answered by calling the parallel_state getter it replaced "
+            "is a name the deprecation cannot cover",
         )
         self.assertNotIn("sglang.srt.runtime_context", parallel_state._EXEMPT_CALLERS)
         self.assertFalse(hasattr(parallel_state, "_UNWRAPPED"))

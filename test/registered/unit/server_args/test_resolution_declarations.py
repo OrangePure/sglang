@@ -134,16 +134,16 @@ def _stash_overlay(server_args):
 def _live_topology_leaves():
     """Names `ParallelContext` serves from the live topology, not the config.
 
-    Read out of `_LIVE_READS`, which is where those names are declared.
+    Read off `ParallelContext`, which is where those names are declared.
     Inferring them from "did the read raise" is wrong -- it only raises while
     the process groups are missing, so in a process where an earlier test built
     them the property answers the *live* size and a leaf check reads it as a
     config mismatch (`parallel.tp_size: bag=1 resolution=2`). Whether a name is
     shadowed is a property of the declaration, not of the process.
     """
-    from sglang.srt.runtime_context import _LIVE_READS
+    from sglang.srt.runtime_context import computed_names
 
-    return frozenset(_LIVE_READS)
+    return computed_names()
 
 
 class TestResolutionDeclarations(CustomTestCase):

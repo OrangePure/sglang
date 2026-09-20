@@ -238,8 +238,8 @@ class TestPrefetchCheckpoints(CustomTestCase):
             patch("concurrent.futures.ThreadPoolExecutor", _InlineExecutor),
             patch("concurrent.futures.wait", side_effect=_wait_all),
             patch(
-                "sglang.srt.distributed.parallel_state.get_world_group",
-                return_value=FakeWorldGroup(),
+                "sglang.srt.distributed.parallel_state._WORLD",
+                FakeWorldGroup(),
             ),
             patch(
                 "sglang.srt.model_loader.weight_utils._prefetch_checkpoint_file",

@@ -33,8 +33,8 @@ def _runner(*, use_data_parallel: bool) -> ViTCudaGraphRunner:
 def test_dp_vit_graph_capture_does_not_enter_tp_communication_capture():
     runner = _runner(use_data_parallel=True)
     with patch(
-        "sglang.srt.distributed.parallel_state.get_tp_group",
-        side_effect=AssertionError("DP capture must be rank-local"),
+        "sglang.srt.distributed.parallel_state._TP",
+        None,
     ):
         with runner._capture_context():
             pass
@@ -52,9 +52,7 @@ def test_non_dp_vit_graph_capture_uses_tp_communication_capture():
 
     group = SimpleNamespace(ca_comm=SimpleNamespace(capture=lambda: Capture()))
     runner = _runner(use_data_parallel=False)
-    with patch(
-        "sglang.srt.distributed.parallel_state.get_tp_group", return_value=group
-    ):
+    with patch("sglang.srt.distributed.parallel_state._TP", group):
         with runner._capture_context():
             pass
     assert entered == [True]

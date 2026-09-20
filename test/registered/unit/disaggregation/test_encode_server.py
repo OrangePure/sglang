@@ -1012,8 +1012,8 @@ class TestEncoderDelivery(CustomTestCase):
 
             with (
                 patch(
-                    "sglang.srt.distributed.parallel_state.get_tp_group",
-                    return_value=TPGroup(),
+                    "sglang.srt.distributed.parallel_state._TP",
+                    TPGroup(),
                 ),
                 patch(
                     "sglang.srt.disaggregation.encoder.server.torch.distributed.all_gather",
@@ -1052,8 +1052,8 @@ class TestEncoderDelivery(CustomTestCase):
 
             with (
                 patch(
-                    "sglang.srt.distributed.parallel_state.get_tp_group",
-                    return_value=TPGroup(),
+                    "sglang.srt.distributed.parallel_state._TP",
+                    TPGroup(),
                 ),
                 patch(
                     "sglang.srt.disaggregation.encoder.server.torch.distributed.all_gather",
@@ -1096,8 +1096,8 @@ class TestEncoderDelivery(CustomTestCase):
 
             with (
                 patch(
-                    "sglang.srt.distributed.parallel_state.get_tp_group",
-                    return_value=TPGroup(),
+                    "sglang.srt.distributed.parallel_state._TP",
+                    TPGroup(),
                 ),
                 patch(
                     "sglang.srt.disaggregation.encoder.server.torch.distributed.all_gather",

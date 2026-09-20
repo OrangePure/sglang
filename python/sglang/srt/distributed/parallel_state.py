@@ -53,8 +53,8 @@ from sglang.srt.model_executor.runner_backend_utils.tc_piecewise_cuda_graph impo
 )
 from sglang.srt.platforms.device_mixin import _DEVICE_TO_DISTRIBUTED_BACKEND
 from sglang.srt.runtime_context import (
-    _LIVE_READS,
-    Live,
+    Computed,
+    ParallelContext,
     _validate_parallel,
     derive_parallel_widths,
     get_global_dwdp_manager,
@@ -3431,9 +3431,9 @@ _EXEMPT_CALLERS = ("sglang.srt.distributed.",)
 # called by the replacement, so the read path needs no exemption from its own
 # warning.
 _CONTEXT_NAME_OF = {
-    live.replaces: name
-    for name, live in _LIVE_READS.items()
-    if isinstance(live, Live) and live.replaces
+    decl.replaces: name
+    for name, decl in vars(ParallelContext).items()
+    if isinstance(decl, Computed) and decl.replaces
 }
 # The width getters read a built group; the context answers the same names from
 # the configuration. Those are one answer rather than two only for the groups

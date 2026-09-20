@@ -265,7 +265,7 @@ class TestDeepGemmMegaMoeApi(CustomTestCase):
                 return_value=object(),
             ),
             patch(
-                "sglang.srt.distributed.parallel_state.get_moe_ep_group",
+                "sglang.srt.distributed.parallel_state._MOE_EP",
                 return_value=SimpleNamespace(device_group=object()),
             ),
         ):
